@@ -10,6 +10,16 @@ const PORT = process.env.PORT || 3000;
 // middleware
 app.use(express.json());
 
+app.use((req, res, next) => {
+    console.log('Hello from the middleware 👋🏾');
+    next();
+});
+
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+})
+
 // ES modules don't support __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,8 +28,11 @@ const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simpl
 
 
 const getAllTours = (req, res) => {
+    console.log(req.requestTime);
+
     res.status(200).json({
         status: 'success',
+        requestedAt: req.requestTime,
         results: tours.length,
         data: {
             tours
