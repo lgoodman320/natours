@@ -3,11 +3,14 @@ import fs from 'fs';
 import 'dotenv/config';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import morgan from 'morgan';
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// middleware
+// 1 - MIDDLEWARES
+app.use(morgan('dev'));
+
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -26,7 +29,7 @@ const __dirname = dirname(__filename);
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
-
+// 2 - ROUTE HANDLERS
 const getAllTours = (req, res) => {
     console.log(req.requestTime);
 
@@ -107,14 +110,14 @@ const deleteTour = (req, res) => {
     });
 };
 
-// Routes
+// ROUTES
 // app.get('/api/v1/tours', getAllTours);
 // app.get('/api/v1/tours/:id', getTour);
 // app.post('/api/v1/tours', createTour);
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-
+// 3 - ROUTES
 app
     .route('/api/v1/tours')
     .get(getAllTours)
@@ -126,6 +129,7 @@ app
     .patch(updateTour)
     .delete(deleteTour);
 
+// 4 - START SERVER
 app.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
 });
