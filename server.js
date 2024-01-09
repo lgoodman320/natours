@@ -1,4 +1,13 @@
+import mongoose from 'mongoose';
 import app from './app.js';
+
+const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
+
+mongoose.connect(DB, {
+  useNewUrlParser: true
+
+})
+.then( () => console.log('DB connection successful!'));
 
 const PORT = process.env.PORT || 3000;
 
