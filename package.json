@@ -4,6 +4,9 @@
   "description": "Learn express, node, and mongoDB",
   "type": "module",
   "main": "app.js",
+  "engines": {
+    "node": "20.0.9"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
