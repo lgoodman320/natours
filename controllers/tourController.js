@@ -13,15 +13,23 @@ const getAllTours = async (req, res) => {
     // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-   
-    const query = Tour.find(JSON.parse(queryStr));
+
+    let query = Tour.find(JSON.parse(queryStr));
 
     // 2) Sorting
-    if(req.query.sort) {
+    if (req.query.sort) {
       const sortBy = req.query.sort.split(',').join(' ');
       query.sort(sortBy);
     } else {
       query.sort('-createdAt');
+    }
+
+    // 3) Field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v'); // exclude __v field
     }
 
     // EXECUTE QUERY
