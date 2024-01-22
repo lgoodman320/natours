@@ -21,7 +21,7 @@ const getAllTours = async (req, res) => {
       const sortBy = req.query.sort.split(',').join(' ');
       query.sort(sortBy);
     } else {
-      query.sort('-createdAt');
+      query.sort('-createdAt _id');
     }
 
     // 3) Field limiting
@@ -32,14 +32,20 @@ const getAllTours = async (req, res) => {
       query = query.select('-__v'); // exclude __v field
     }
 
+    // 4) Pagination
+    const page = req.query.page * 1 || 1; // convert string to number
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error('This page does not exist');
+    }
+
     // EXECUTE QUERY
     const tours = await query;
-
-    // const query = Tour.find()
-    //   .where('duration')
-    //   .equals(5)
-    //   .where('difficulty')
-    //   .equals('easy');
 
     // SEND RESPONSE
     res.status(200).json({
