@@ -53,6 +53,15 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 const getUser = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -81,4 +90,4 @@ const deleteUser = (req, res) => {
   });
 };
 
-export { getAllUsers, getUser, createUser, updateUser, deleteUser, updateMe };
+export { getAllUsers, getUser, createUser, updateUser, deleteUser, updateMe, deleteMe};
